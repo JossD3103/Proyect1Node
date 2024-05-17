@@ -8,10 +8,10 @@ block content
 
     div.mt-8.mx-auto.max-w-md
       div.bg-white.py-8.px-4.shadow
-        form.space-y-5(action="")
+        form.space-y-5(method="post" action="/auth/register")
           div
             label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="nombre") Tu Nombre 
-            input#nombre.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Tu Nombre" type="text" name="nombre")
+            input#nombre.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Tu Nombre" type="text" name="name")
           div
             label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") Email de Registro 
             input#email.w-full.px-3.py-2.border.border-gray-300.rounded-md.placeholder-gray-400(placeholder="Tu Email" type="email" name="email")
