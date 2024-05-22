@@ -1,7 +1,8 @@
 import { check, validationResult } from "express-validator"
 import User from "../models/User.js"
 import { generateId } from "../helpers/tokens.js"
-import { render } from "pug"
+import { emailRegister } from "../helpers/emails.js"
+
 
 const formLogin = (req, res) => {
   res.render('auth/login', {
@@ -51,22 +52,53 @@ const register = async (req, res) => {
   }
 
   //almacenar un usuario
-  await User.create({
+  const user = await User.create({
     name,
     email,
     password,
     token: generateId()
   })
 
+  //email de confirmacion
+  emailRegister({
+    name: user.name,
+    email: user.email,
+    token: user.token
+  })
+
   //mostrar mensaje de comfirmacion
-  res,render('templates/mesage', {
+  res.render('templates/mesage', {
     page: 'Cuenta Creada Correctamente',
     mesage: 'Hemos Enviado un Email de Confirmacion, presiona en el enlace'
   })
 
 }
 
-const formForgotPassword= (req, res) => {
+//funcion para comprobar una cuenta 
+const verify = async (req, res) => {
+  const { token } = req.params;
+
+  //verificar que el usuario sea valido
+  const user = await User.findOne({ where: {token} })
+  if(!user){
+    return res.render('auth/verify-account', {
+      page: 'Error al confirmar tu cuenta',
+      mesage: 'Hubo un error al confirmar tu cuenta, intenta de nuevo',
+      error: true,
+    })
+  }
+  //confirmar cuenta 
+  user.token = null;
+  user.confirm = true;
+  await user.save();
+
+  res.render('auth/verify-account', {
+    page: 'Cuenta Confirmada',
+    mesage: 'La cuenta se confirmó correctamente',
+  })
+}
+
+const formForgotPassword = (req, res) => {
   res.render('auth/forgot-password', {
     page: 'Recupera tu acceso a Bienes Raices'
   })
@@ -76,5 +108,6 @@ export {
   formLogin,
   formRegister,
   formForgotPassword,
+  verify,
   register
 }

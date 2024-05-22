@@ -4,6 +4,7 @@ import {
   formRegister,
   register,
   formForgotPassword,
+  verify,
 } from '../controllers/userController.js';
 
 
@@ -14,6 +15,8 @@ router.get('/login', formLogin);
 
 router.get('/register', formRegister)
 router.post('/register', register)
+
+router.get ('/verify/:token', verify)
 
 router.get('/forgot-password', formForgotPassword)
 
