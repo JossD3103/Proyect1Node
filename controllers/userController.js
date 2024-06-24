@@ -1,13 +1,18 @@
-import { check, validationResult } from "express-validator"
+import { 
+  check, 
+  validationResult 
+} from "express-validator"
 import User from "../models/User.js"
 import bcrypt from 'bcrypt'
-import { generateId } from "../helpers/tokens.js"
+import jwt from 'jsonwebtoken'
+import { 
+  generateId, 
+  generateJWT 
+} from "../helpers/tokens.js"
 import { 
   emailRegister,
   emailForgotPassword
  } from "../helpers/emails.js"
-import { where } from "sequelize"
-
 
 const formLogin = (req, res) => {
   res.render('auth/login', {
@@ -54,7 +59,25 @@ const authenticate = async (req, res) => {
   }
 
   //Revisar el password
-  
+  if(!user.verifyPassword(password)){
+    return res.render('auth/login', {
+      page: 'Iniciar Sesion',
+      csrfToken: req.csrfToken(),
+      errors: [{msg: 'El Password es incorrecto'}],
+    })
+  }
+
+  //Autenticar al usuario 
+  const token = generateJWT(user.id)
+  console.log(token);
+
+  //almacenar en un cookie
+
+  return res.cookie('_token', token, {
+    httpOnly: true,
+    secure: true
+  }).redirect('/my-properties')
+
 }
 
 const formRegister = (req, res) => {
