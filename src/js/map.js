@@ -21,16 +21,18 @@
   //Detectar el movimiento del pin
   marker.on('moveend', function(e){
     marker = e.target
-
     const posicion = marker.getLatLng();
-
     mapa.panTo(new L.LatLng(posicion.lat, posicion.lng))
+
     //obtener la info de la calle al soltar el pin 
     geocodeservice.reverse().latlng(posicion, 13).run(function(error, resultado){
-      console.log(resultado);
       marker.bindPopup(resultado.address.LongLabel)
+
+    //llenar los campos
+    document.querySelector('.calle').textContent = resultado?.address?.Address ?? '';
+    document.querySelector('#street').value = resultado?.address?.Address ?? '';
+    document.querySelector('#lat').value = resultado?.latlng?.lat ?? '';
+    document.querySelector('#lng').value = resultado?.latlng?.lng ?? '';
     })
   })
-
-
 })()
