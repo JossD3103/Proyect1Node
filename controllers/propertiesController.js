@@ -1,3 +1,5 @@
+import Price from '../models/Price.js'
+import Category from '../models/Category.js'
 
 const admin = (req, res) => {
   res.render('properties/admin', {
@@ -6,7 +8,9 @@ const admin = (req, res) => {
   })
 }
 
-const create = (req, res) => {
+const create = async (req, res) => {
+  //consultar modelo
+  const [] = await Promise.all([])
   res.render('properties/create', {
     page: 'Crear Propiedad',
     nav: true,
